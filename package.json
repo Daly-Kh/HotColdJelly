@@ -1,6 +1,6 @@
 {
   "name": "hotcoldjelly",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Automated hot/cold tiered storage for Jellyfin",
   "private": true,
   "scripts": {
