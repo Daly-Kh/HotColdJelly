@@ -1,0 +1,25 @@
+{
+  "name": "hotcoldjelly",
+  "version": "0.1.0",
+  "description": "Automated hot/cold tiered storage for Jellyfin",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "release": "HUSKY=0 release-it",
+    "release:dry": "HUSKY=0 release-it --dry-run"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@release-it/conventional-changelog": "^8.0.0",
+    "commitizen": "^4.3.0",
+    "cz-git": "^1.9.0",
+    "husky": "^9.0.0",
+    "release-it": "^17.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  }
+}

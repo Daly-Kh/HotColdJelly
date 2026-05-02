@@ -1,0 +1,89 @@
+version: "3.8"
+
+name: hot-cold-jelly
+
+services:
+
+  hot-cold-jelly-listener:
+    build:
+      context: .
+      dockerfile: listener/Dockerfile
+    container_name: hot-cold-jelly_listener
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "0.0.0.0:5001:5001"
+    volumes:
+      - ${HOST_MEDIA_VOLUME}:${CONTAINER_MEDIA_ROOT}
+      - ${COLD_MOUNT}:${COLD_PATH}
+      - ${RCLONE_CONFIG}:/root/.config/rclone:ro
+      - ${LOGS_VOLUME}:/logs
+    environment:
+      - JELLYFIN_URL=${JELLYFIN_URL}
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
+      - JELLYFIN_USER_IDS=${JELLYFIN_USER_IDS}
+      - HOT_DIRS=${HOT_DIRS}
+      - COLD_PATH=${COLD_PATH}
+      - RCLONE_BIN=${RCLONE_BIN}
+      - RCLONE_REMOTE=${RCLONE_REMOTE}
+      - RCLONE_CHUNK_SIZE=${RCLONE_CHUNK_SIZE}
+      - RCLONE_UPLOAD_CUTOFF=${RCLONE_UPLOAD_CUTOFF}
+      - RCLONE_STATS_INTERVAL=${RCLONE_STATS_INTERVAL}
+      - MOVIE_PLAYED_COLD_DAYS=${MOVIE_PLAYED_COLD_DAYS}
+      - MOVIE_NEVER_WATCHED_COLD_DAYS=${MOVIE_NEVER_WATCHED_COLD_DAYS}
+      - MOVIE_ABANDONED_DAYS=${MOVIE_ABANDONED_DAYS}
+      - SHOW_INACTIVITY_COLD_DAYS=${SHOW_INACTIVITY_COLD_DAYS}
+      - SHOW_ALL_WATCHED_COLD_DAYS=${SHOW_ALL_WATCHED_COLD_DAYS}
+      - MAX_RETRIES=${MAX_RETRIES}
+      - RETRY_WAIT_SEC=${RETRY_WAIT_SEC}
+      - RECALL_BLOCKING=${RECALL_BLOCKING}
+      - EXTS=${EXTS}
+      - KEEP_HOT=${KEEP_HOT}
+      - LOG_BASE_DIR=${LOG_BASE_DIR}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  hot-cold-jelly-archive:
+    build:
+      context: .
+      dockerfile: archive/Dockerfile
+    container_name: hot-cold-jelly_archive
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - ${HOST_MEDIA_VOLUME}:${CONTAINER_MEDIA_ROOT}
+      - ${RCLONE_CONFIG}:/root/.config/rclone:ro
+      - ${LOGS_VOLUME}:/logs
+    environment:
+      - JELLYFIN_URL=${JELLYFIN_URL}
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY}
+      - JELLYFIN_USER_IDS=${JELLYFIN_USER_IDS}
+      - HOT_DIRS=${HOT_DIRS}
+      - COLD_PATH=${COLD_PATH}
+      - RCLONE_BIN=${RCLONE_BIN}
+      - RCLONE_REMOTE=${RCLONE_REMOTE}
+      - RCLONE_CHUNK_SIZE=${RCLONE_CHUNK_SIZE}
+      - RCLONE_UPLOAD_CUTOFF=${RCLONE_UPLOAD_CUTOFF}
+      - RCLONE_STATS_INTERVAL=${RCLONE_STATS_INTERVAL}
+      - MOVIE_PLAYED_COLD_DAYS=${MOVIE_PLAYED_COLD_DAYS}
+      - MOVIE_NEVER_WATCHED_COLD_DAYS=${MOVIE_NEVER_WATCHED_COLD_DAYS}
+      - MOVIE_ABANDONED_DAYS=${MOVIE_ABANDONED_DAYS}
+      - SHOW_INACTIVITY_COLD_DAYS=${SHOW_INACTIVITY_COLD_DAYS}
+      - SHOW_ALL_WATCHED_COLD_DAYS=${SHOW_ALL_WATCHED_COLD_DAYS}
+      - MAX_GB=${MAX_GB}
+      - MAX_RETRIES=${MAX_RETRIES}
+      - RETRY_WAIT_SEC=${RETRY_WAIT_SEC}
+      - RUN_MODE=${RUN_MODE}
+      - EXTS=${EXTS}
+      - KEEP_HOT=${KEEP_HOT}
+      - LOG_BASE_DIR=${LOG_BASE_DIR}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
